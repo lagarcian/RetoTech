@@ -3,9 +3,6 @@ import numpy as np
 import re
 import json
 
-# --------------------------------------------------
-# Funciones de anonimización
-# --------------------------------------------------
 
 def mask_name(name):
     if pd.isna(name): 
@@ -54,9 +51,7 @@ def clean_text(text):
     return text
 
 
-# ---------------------------------------------------
-# Crear DataFrame desde JSON recibido
-# ---------------------------------------------------
+
 
 def ticket_from_json(json_input):
     """
@@ -74,9 +69,7 @@ def ticket_from_json(json_input):
     return pd.DataFrame([data])
 
 
-# ---------------------------------------------------
-# Función para anonimizar un DataFrame de ticket
-# ---------------------------------------------------
+
 
 def anonimizar_ticket(df):
     df = df.copy()
@@ -92,9 +85,7 @@ def anonimizar_ticket(df):
     return df
 
 
-# ---------------------------------------------------
-# EJEMPLO: JSON de entrada (simula el ticket real)
-# ---------------------------------------------------
+
 
 json_ticket = """
 {
@@ -109,9 +100,7 @@ json_ticket = """
 }
 """
 
-# ---------------------------------------------------
-# PROCESAMIENTO COMPLETO
-# ---------------------------------------------------
+
 
 df_original = ticket_from_json(json_ticket)
 df_anon = anonimizar_ticket(df_original)
@@ -121,4 +110,5 @@ print(df_original)
 
 print("\n=== TICKET ANONIMIZADO PARA IA ===")
 print(df_anon)
+
 
