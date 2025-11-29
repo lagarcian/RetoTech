@@ -64,12 +64,16 @@ class ThreatDetector:
         self.phishing_keywords = [
             r"urgente", r"inmediato", r"suspensión", r"bloqueo de cuenta",
             r"verificar su identidad", r"ganador", r"verify your account", 
-            r"urgent action", r"bank transfer"
-            # Removí 'contraseña' de keywords simples para evitar bloquear tickets de soporte legítimos,
-            # ahora lo manejamos con lógica contextual o sanitización.
+            r"urgent action", r"bank transfer",
+            # Nuevas palabras clave agregadas
+            r"actualice su cuenta", r"cobro no reconocido", r"pago pendiente",
+            r"contraseña expirada", r"clic aquí", r"descargar adjunto",
+            r"atención inmediata", r"confirmar datos", r"seguridad de cuenta",
+            r"alerta de seguridad", r"verificación urgente"
         ]
         self.ip_pattern = r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b'
         self.url_pattern = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+
 
     def _is_private_ip(self, ip: str) -> bool:
         """Determina si una IP es local/privada (común en tickets de soporte)."""
@@ -191,3 +195,4 @@ if __name__ == "__main__":
                 print("Error: No se pudo recuperar el ticket original para limpieza completa.")
 
             print("\n>> Ticket listo para Fase de IA (Churn Analysis) <<")
+
