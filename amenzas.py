@@ -23,7 +23,7 @@ class Anonymizer:
         }
 
     def sanitize_text(self, text: str) -> str:
-        """Reemplaza datos sensibles con tokens genéricos."""
+        """Reemplaza datos sensibles con tokens genéricos en una cadena de texto."""
         sanitized = text
         
         # 1. Enmascarar Emails
@@ -39,6 +39,22 @@ class Anonymizer:
         sanitized = re.sub(self.patterns['password'], r'\1=[PASSWORD_SCRUBBED]', sanitized, flags=re.IGNORECASE)
         
         return sanitized
+
+    def sanitize_json(self, data: Dict) -> Dict:
+        """
+        Recorre un diccionario completo y limpia todos los valores de tipo string.
+        Asegura que campos estructurados (como 'email' o 'telefono') también sean sanitizados.
+        """
+        cleaned_data = data.copy()
+        for key, value in cleaned_data.items():
+            if isinstance(value, str):
+                # Aplicamos la limpieza a cada campo de texto en el JSON
+                cleaned_data[key] = self.sanitize_text(value)
+            elif isinstance(value, dict):
+                # Recursividad básica para diccionarios anidados
+                cleaned_data[key] = self.sanitize_json(value)
+            # Nota: Podríamos agregar manejo de listas si fuera necesario
+        return cleaned_data
 
 class ThreatDetector:
     """
@@ -142,6 +158,12 @@ if __name__ == "__main__":
     # 1. Fase de Ingesta y Detección
     analisis_seguridad = detector.ingest_json_payload(json_ticket)
     
+    # Simulamos acceso a los datos crudos originales para poder limpiar el objeto completo
+    # En producción, esto se manejaría pasando el objeto completo por el pipeline
+    datos_crudos = json.loads(json_ticket)
+    if isinstance(datos_crudos, dict): 
+        datos_crudos = [datos_crudos] # Normalizar a lista para facilitar búsqueda por ID
+    
     for resultado in analisis_seguridad:
         print(f"Ticket ID: {resultado['ticket_id']}")
         print(f"Estado de Amenaza: {resultado['status']} (Score: {resultado['risk_score']})")
@@ -150,11 +172,22 @@ if __name__ == "__main__":
             print("ACCION: Bloqueado por seguridad.")
         
         elif resultado['next_action'] == "ANONYMIZE":
-            print("ACCION: Aprobado. Iniciando limpieza de PII...")
+            print("ACCION: Aprobado. Iniciando limpieza profunda de PII...")
             
-            # 2. Fase de Anonimización
-            texto_limpio = anonymizer.sanitize_text(resultado['original_text'])
+            # PASO CRÍTICO: Recuperar el objeto original completo para limpiar metadatos
+            # Buscamos el ticket original usando el ID o Usuario
+            ticket_original = next(
+                (t for t in datos_crudos if t.get('id') == resultado['ticket_id'] or t.get('usuario') == resultado['ticket_id']), 
+                None
+            )
             
-            print(f"\n[ORIGINAL]: {resultado['original_text']}")
-            print(f"[LIMPIO]  : {texto_limpio}")
+            if ticket_original:
+                # Limpiamos TODO el objeto, no solo el texto
+                ticket_limpio = anonymizer.sanitize_json(ticket_original)
+                
+                print(f"\n[JSON ORIGINAL]:\n{json.dumps(ticket_original, indent=2, ensure_ascii=False)}")
+                print(f"\n[JSON SEGURO] (Listo para IA):\n{json.dumps(ticket_limpio, indent=2, ensure_ascii=False)}")
+            else:
+                print("Error: No se pudo recuperar el ticket original para limpieza completa.")
+
             print("\n>> Ticket listo para Fase de IA (Churn Analysis) <<")
