@@ -45,14 +45,14 @@ Antes de que la IA analice cualquier ticket, los datos atraviesan una capa
    - [cite_start]Tabla 'blocked_tickets': Recibe datos crudos de amenazas[cite: 3].
 
 
-ETAPA 2: INTELIGENCIA ARTIFICIAL Y NLP (EN PROGRESO)
+ETAPA 2: INTELIGENCIA ARTIFICIAL Y NLP 
 [cite_start]Los datos asegurados alimentan el pipeline de Machine Learning[cite: 4]:
 
 1. Vectorización (Completo):
    - Script: vectorizer.py.
    - [cite_start]Estado: Matriz de entrada X generada y archivos .pkl listos[cite: 4].
 
-2. Análisis de Sentimientos (Pendiente/En integración):
+2. Análisis de Sentimientos :
    - Objetivo: Generar una métrica de frustración normalizada (entre -1.0 y 1.0) 
      [cite_start]utilizando la librería NLTK[cite: 4].
 
@@ -60,8 +60,7 @@ ETAPA 2: INTELIGENCIA ARTIFICIAL Y NLP (EN PROGRESO)
    - Script: train_model.py.
    - [cite_start]Objetivo: Entrenar el modelo final 'ticket_classifier_model.h5'[cite: 4].
 
-
-MODULO DE ANALITICA AVANZADA
+ETAPA 3: MODULO DE ANALITICA AVANZADA
 ----------------------------
 Archivo: insights_estadisticos.py
 
