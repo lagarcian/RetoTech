@@ -3,9 +3,9 @@ import numpy as np
 import re
 import json
 
-# ---------------------------------------------------
+# --------------------------------------------------
 # Funciones de anonimización
-# ---------------------------------------------------
+# --------------------------------------------------
 
 def mask_name(name):
     if pd.isna(name): 
@@ -121,3 +121,4 @@ print(df_original)
 
 print("\n=== TICKET ANONIMIZADO PARA IA ===")
 print(df_anon)
+
