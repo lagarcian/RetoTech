@@ -6,4 +6,77 @@ Camilo Figuera Desarrollador y Psicólogo,
 Julian Niño Estudiante de Administración Ambiental,
 Luis García Matemático. 
 
-Retotech - Solución de Procesamiento Inteligente de TicketsEste repositorio contiene la arquitectura de la solución Retotech1, diseñada para la gestión, aseguramiento y clasificación automática de tickets de soporte mediante Inteligencia Artificial. Descripción GeneralEl sistema implementa un flujo de trabajo híbrido (PHP/Python) que intercepta los tickets antes de su almacenamiento para garantizar la seguridad y privacidad de los datos, preparando el terreno para un análisis predictivo mediante redes neuronales. Arquitectura de la SoluciónEtapa 1: Pre-procesamiento y Seguridad (Implementado)Antes de que cualquier dato sea analizado por la IA, pasa por una capa rigurosa de limpieza y seguridad 2:Detección de Amenazas (Phishing):Se utiliza el módulo ThreatDetector dentro de process_ticket.py.Escanea palabras clave de riesgo (ej: "urgente", "bloqueo de cuenta").Lógica: Si el puntaje de riesgo es $\ge 40$, el ticket es bloqueado automáticamente3.Aislamiento:El plugin custom-ticket-handler.php detiene el flujo de tickets peligrosos.Los tickets bloqueados no se insertan en la base de datos principal; se envían a la tabla blocked_tickets para auditoría4.Anonimización (Privacy by Design):El módulo Anonymizer utiliza expresiones regulares (Regex) para proteger PII (Información de Identificación Personal).Datos como correos, IPs y contraseñas son reemplazados por tokens (ej: [EMAIL_REDACTED]) antes de guardarse en la BD5.Almacenamiento Seguro:Tabla tickets: Recibe únicamente datos limpios y anonimizados.Tabla blocked_tickets: Recibe datos crudos de amenazas detectadas6.Etapa 2: Inteligencia Artificial y NLP (En Progreso)Una vez asegurados los datos, se procesan para el entrenamiento del modelo clasificatorio:Vectorización:Script: vectorizer.py.Estado: Generación de matriz de entrada $X$ y archivos .pkl (X_vectors.pkl, tfidf_vectorizer.pkl) completa7.Análisis de Sentimientos:Objetivo: Generar una métrica de frustración (valor entre -1.0 y 1.0) utilizando NLTK8.Clasificación:Script: train_model.py.Objetivo: Entrenar el modelo final ticket_classifier_model.h59. Este módulo (insights_estadisticos.py) implementa un motor de análisis híbrido que combina estadística descriptiva y Procesamiento de Lenguaje Natural (NLP). Su objetivo principal es identificar automáticamente qué factores operativos y cualitativos impulsan el riesgo de churn (abandono de clientes).
+RETOTECH: SOLUCION DE PROCESAMIENTO INTELIGENTE Y SEGURO DE TICKETS
+===================================================================
+
+DESCRIPCION GENERAL
+-------------------
+Retotech es una arquitectura de solución diseñada para la gestión, aseguramiento 
+[cite_start]y clasificación automática de tickets de soporte[cite: 1]. El sistema implementa un flujo 
+de trabajo híbrido (PHP/Python) que intercepta los datos antes de su almacenamiento, 
+garantizando seguridad y privacidad previas al análisis predictivo con Inteligencia 
+[cite_start]Artificial[cite: 2, 3].
+
+
+ARQUITECTURA DE LA SOLUCION
+---------------------------
+
+ETAPA 1: PRE-PROCESAMIENTO Y SEGURIDAD (IMPLEMENTADO)
+Antes de que la IA analice cualquier ticket, los datos atraviesan una capa 
+[cite_start]rigurosa de limpieza y protección[cite: 3]:
+
+1. Detección de Amenazas (Phishing):
+   - Módulo: ThreatDetector (en process_ticket.py).
+   - Función: Escanea palabras clave de riesgo (ej: "urgente", "bloqueo").
+   - [cite_start]Lógica: Si el puntaje de riesgo es >= 40, el ticket es bloqueado[cite: 3].
+
+2. Aislamiento de Ataques:
+   - Mecanismo: El plugin 'custom-ticket-handler.php' detiene tickets peligrosos.
+   - Auditoría: Los tickets bloqueados NO ingresan a la base de datos principal; 
+     [cite_start]se desvían a la tabla 'blocked_tickets'[cite: 3].
+
+3. Anonimización (Privacy by Design):
+   - Módulo: Anonymizer (en process_ticket.py).
+   - Acción: Utiliza expresiones regulares para reemplazar PII (correos, IPs) 
+     [cite_start]con tokens seguros (ej: [EMAIL_REDACTED]) antes de guardar en BD[cite: 3].
+
+4. Almacenamiento Seguro:
+   - [cite_start]Tabla 'tickets': Recibe únicamente datos limpios[cite: 3].
+   - [cite_start]Tabla 'blocked_tickets': Recibe datos crudos de amenazas[cite: 3].
+
+
+ETAPA 2: INTELIGENCIA ARTIFICIAL Y NLP (EN PROGRESO)
+[cite_start]Los datos asegurados alimentan el pipeline de Machine Learning[cite: 4]:
+
+1. Vectorización (Completo):
+   - Script: vectorizer.py.
+   - [cite_start]Estado: Matriz de entrada X generada y archivos .pkl listos[cite: 4].
+
+2. Análisis de Sentimientos (Pendiente/En integración):
+   - Objetivo: Generar una métrica de frustración normalizada (entre -1.0 y 1.0) 
+     [cite_start]utilizando la librería NLTK[cite: 4].
+
+3. Clasificación Neuronal:
+   - Script: train_model.py.
+   - [cite_start]Objetivo: Entrenar el modelo final 'ticket_classifier_model.h5'[cite: 4].
+
+
+MODULO DE ANALITICA AVANZADA
+----------------------------
+Archivo: insights_estadisticos.py
+
+Como complemento a la gestión operativa, la solución incluye un motor de análisis 
+híbrido para la toma de decisiones.
+
+- Propósito: Identificar factores que impulsan el riesgo de churn (abandono).
+- Metodología: Combina estadística descriptiva (correlación de Pearson) con 
+  Procesamiento de Lenguaje Natural (NLP).
+- Funcionalidad: Analiza métricas de servicio y texto libre para generar insights 
+  automáticos sobre la satisfacción del cliente.
+
+
+TECNOLOGIAS CLAVE
+-----------------
+- Backend: PHP (Intercepción), Python (Procesamiento y ML).
+- NLP & IA: NLTK (VADER Sentiment Analysis), Scikit-Learn, TensorFlow/Keras.
+- Seguridad: Regex para saneamiento, Lógica de umbral de riesgo.
